@@ -12,10 +12,20 @@ server {
     {% block server_begin %}{% endblock %}
 
     {% block server_basic -%}
-    listen {{ item.listen | default('80') }};
+{% for i in item.listen %}
+    listen {{ i | default('80') }};
+{% endfor %}    
 
 {% if item.server_name is defined %}
     server_name {{ item.server_name }};
+{% endif %}
+
+{% if item.ssl_certificate is defined %}
+    ssl_certificate {{ item.ssl_certificate }};
+{% endif %}
+
+{% if item.ssl_certificate_key is defined %}
+    ssl_certificate_key {{ item.ssl_certificate_key }};
 {% endif %}
 
 {% if item.root is defined %}
