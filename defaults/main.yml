@@ -26,6 +26,9 @@ nginx_multi_accept: "off"
 nginx_error_log: "/var/log/nginx/error.log warn"
 nginx_access_log: "/var/log/nginx/access.log main buffer=16k flush=2m"
 
+nginx_gzip: "on"
+nginx_gzip_disable: "msie6"
+
 nginx_sendfile: "on"
 nginx_tcp_nopush: "on"
 nginx_tcp_nodelay: "on"
@@ -40,6 +43,9 @@ nginx_client_max_body_size: "64m"
 nginx_server_names_hash_bucket_size: "64"
 
 nginx_proxy_cache_path: ""
+
+limit_req_zone_options: ""
+limit_req_options: ""
 
 nginx_extra_conf_options: ""
 # Example extra main options, used within the main nginx's context:
@@ -56,6 +62,9 @@ nginx_extra_http_options: ""
 #      proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
 #      proxy_set_header   Host $http_host;
 
+nginx_realip_ip_from: ""
+nginx_realip_options: ""
+    
 nginx_remove_default_vhost: false
 nginx_vhosts: []
 # Example vhost below, showing all available options:
@@ -88,3 +97,30 @@ nginx_log_format: |-
   '$remote_addr - $remote_user [$time_local] "$request" '
   '$status $body_bytes_sent "$http_referer" '
   '"$http_user_agent" "$http_x_forwarded_for"'
+
+# Netdata extended proxy
+nginx_log_format_proxy: |-
+  '$remote_addr - $remote_user [$time_local] '
+  '"$request" $status $body_bytes_sent '
+  '$request_length $request_time $upstream_response_time '
+  '"$http_referer" "$http_user_agent"'
+#  '$http_x_forwarded_for - $remote_user [$time_local] '
+
+# Nginx default proxy
+#nginx_log_format_proxy: |-
+#  '$http_x_forwarded_for - $remote_user [$time_local] '
+#  '"$request" $status $body_bytes_sent '
+#  '"$http_referer" "$http_user_agent"'
+
+# Nginx custom
+nginx_log_format_local: |-
+  '$remote_addr - $remote_user [$time_local] '
+  '"$request" $status $body_bytes_sent '
+  '$request_length $request_time $upstream_response_time '
+  '"$http_referer" "$http_user_agent"'
+
+# Nginix default
+#nginx_log_format_local: |-
+#  '$remote_addr - $remote_user [$time_local] '
+#  '"$request" $status $body_bytes_sent "$http_referer" '
+#  '"$http_user_agent"'
