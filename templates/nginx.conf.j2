@@ -29,9 +29,17 @@ http {
 
     client_max_body_size {{ nginx_client_max_body_size }};
 
-    log_format  main  {{ nginx_log_format|indent(23) }};
+{% if deployment is defined and deployment == 'local' %}
+    log_format  main  {{ nginx_log_format_local|indent(23) }};
+{% else %}
+    log_format  main  {{ nginx_log_format_proxy|indent(23) }};
+{% endif %}
 
     access_log  {{ nginx_access_log }};
+    error_log  {{ nginx_error_log }};
+
+    gzip  {{ nginx_gzip }};
+    gzip_disable  {{ nginx_gzip_disable }};
 
     sendfile        {{ nginx_sendfile }};
     tcp_nopush      {{ nginx_tcp_nopush }};
@@ -49,6 +57,10 @@ http {
 {% block http_gzip %}
     # gzip on;
 {% endblock %}
+
+{% if nginx_realip_options %}
+    {{ nginx_realip_options|indent(4, False) }}
+{% endif %}
 
 {% if nginx_extra_http_options %}
     {{ nginx_extra_http_options|indent(4, False) }}
@@ -69,6 +81,12 @@ http {
     }
 {% endfor %}
 {% endblock %}
+
+{% if limit_req_zone_options %}
+    # Rate Limiting:
+    limit_req_zone {{ limit_req_zone_options }};
+    limit_req {{ limit_req_options }};
+{% endif %}
 
 {% block http_includes %}
     include {{ nginx_conf_path }}/*.conf;
